@@ -38,6 +38,12 @@ h2{font-size:clamp(26px,3.6vw,36px);color:#fff}
 .intro{display:flex;flex-direction:column;gap:6px}
 .player{border-radius:16px;overflow:hidden;border:1px solid var(--borde);background:#000;aspect-ratio:16/9;max-width:100%}
 .player video{display:block;width:100%;height:100%}
+.vhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.lang{display:inline-flex;border:2px solid var(--borde);border-radius:999px;padding:3px;background:var(--card)}
+.lang button{all:unset;cursor:pointer;font-family:var(--display);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:15px;padding:7px 18px;border-radius:999px;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--amarillo);color:#1a1400}
+.lang button:hover:not([aria-pressed="true"]){color:#fff}
+.lang button:focus-visible{outline:3px solid #fff;outline-offset:2px}
 .vcap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:10px}
 .sect-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
@@ -95,14 +101,19 @@ footer .wrap{padding-block:20px;font-size:13px;color:var(--muted);display:flex;j
     </section>
 
     <section>
+      <div class="vhead">
+        <div class="eyebrow">Video demo</div>
+        <div class="lang" role="group" aria-label="Idioma del video">
+          <button type="button" data-lang="es" aria-pressed="true">Español</button>
+          <button type="button" data-lang="en" aria-pressed="false">English</button>
+        </div>
+      </div>
       <div class="player">
-        <video id="video" controls controlslist="nodownload" disablepictureinpicture oncontextmenu="return false" playsinline preload="metadata" poster="poster.jpg">
-          <source src="MaronIA-demo.mp4" type="video/mp4">
-        </video>
+        <video id="video" controls controlslist="nodownload" disablepictureinpicture oncontextmenu="return false" playsinline preload="metadata" poster="poster-es.jpg" src="MaronIA-demo-es.mp4"></video>
       </div>
       <div class="vcap">
-        <span>Video demo · 1:24 · narrado y subtitulado en español</span>
-        <span>Recreación del flujo con los datos de demo del sistema (cuenta 10912)</span>
+        <span id="vcap-a">1:20 · narrado y subtitulado en español</span>
+        <span id="vcap-b">Recreación del flujo con los datos de demo del sistema (cuenta 10912)</span>
       </div>
     </section>
 
@@ -155,6 +166,28 @@ footer .wrap{padding-block:20px;font-size:13px;color:var(--muted);display:flex;j
 </footer>
 
 <script>
+(function(){
+  const V = {
+    es: { src: 'MaronIA-demo-es.mp4', poster: 'poster-es.jpg', a: '1:20 · narrado y subtitulado en español', b: 'Recreación del flujo con los datos de demo del sistema (cuenta 10912)' },
+    en: { src: 'MaronIA-demo-en.mp4', poster: 'poster-en.jpg', a: '1:16 · English narration and subtitles', b: 'Recreated flow with the system’s demo data (account 10912) · call shown translated' },
+  };
+  const video = document.getElementById('video');
+  const btns = document.querySelectorAll('.lang button');
+  function setLang(l, keepPlaying){
+    if (!V[l]) l = 'es';
+    const wasPlaying = keepPlaying && !video.paused;
+    btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === l)));
+    if (video.getAttribute('src') !== V[l].src) { video.poster = V[l].poster; video.src = V[l].src; video.load(); if (wasPlaying) video.play().catch(() => {}); }
+    document.getElementById('vcap-a').textContent = V[l].a;
+    document.getElementById('vcap-b').textContent = V[l].b;
+    try { localStorage.setItem('maronia-lang', l); } catch (e) {}
+  }
+  btns.forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang, true)));
+  let start = 'es';
+  const q = new URLSearchParams(location.search).get('lang') || location.hash.slice(1);
+  if (V[q]) start = q; else { try { start = localStorage.getItem('maronia-lang') || (navigator.language || '').slice(0, 2); } catch (e) {} }
+  setLang(V[start] ? start : 'es', false);
+})();
 (function(){
   const names = ["Portada", "Problema y solución", "Cómo funciona", "Plataforma", "Reglas y cumplimiento", "Tecnología y estado"];
   const lb = document.getElementById('lb'), img = document.getElementById('lb-img'), view = document.getElementById('lb-view');
