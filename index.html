@@ -39,14 +39,6 @@ h2{font-size:clamp(26px,3.6vw,36px);color:#fff}
 .player{border-radius:16px;overflow:hidden;border:1px solid var(--borde);background:#000;aspect-ratio:16/9;max-width:100%}
 .player video{display:block;width:100%;height:100%}
 .vcap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:10px}
-.actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.btn{text-decoration:none;font:inherit;font-family:var(--display);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:17px;border-radius:10px;padding:12px 20px;cursor:pointer;border:2px solid var(--claro);background:transparent;color:#fff;display:inline-flex;gap:10px;align-items:center}
-.btn.primary{background:var(--amarillo);border-color:var(--amarillo);color:#1a1400}
-.btn:hover{filter:brightness(1.1)}
-.btn:focus-visible{outline:3px solid #fff;outline-offset:2px}
-.btn small{font-family:var(--body);font-weight:500;letter-spacing:0;text-transform:none;font-size:13px;opacity:.75}
-.status{font-size:14px;color:var(--muted);min-height:1.4em}
-.status.err{color:var(--rojo)}
 .sect-h{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
 .hint{font-size:14px;color:var(--muted);margin:-6px 0 14px}
@@ -104,7 +96,7 @@ footer .wrap{padding-block:20px;font-size:13px;color:var(--muted);display:flex;j
 
     <section>
       <div class="player">
-        <video id="video" controls playsinline preload="metadata" poster="poster.jpg">
+        <video id="video" controls controlslist="nodownload" disablepictureinpicture oncontextmenu="return false" playsinline preload="metadata" poster="poster.jpg">
           <source src="MaronIA-demo.mp4" type="video/mp4">
         </video>
       </div>
@@ -114,11 +106,6 @@ footer .wrap{padding-block:20px;font-size:13px;color:var(--muted);display:flex;j
       </div>
     </section>
 
-    <section class="actions" aria-label="Descargas">
-      <a class="btn primary" href="MaronIA-dossier.pdf" download>Descargar dossier PDF <small>6 págs · 0,8 MB</small></a>
-      <a class="btn" href="MaronIA-demo.mp4" download>Descargar video MP4 <small>1080p · 5,3 MB</small></a>
-      <span class="status" id="status" role="status"></span>
-    </section>
 
     <section>
       <div class="sect-h">
